@@ -32,7 +32,14 @@
         "deploy-the-graph:optimism": "npm run codegen:optimism && graph deploy --product hosted-service perpetual-protocol/perpetual-v2-optimism",
         "deploy-satsuma:optimism": "npm run codegen-satsuma:optimism && graph deploy --version-label $(git rev-parse --short HEAD) --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key $SATSUMA_DEPLOY_KEY perpetual-v2-optimism",
         "health-check": "ts-node ./scripts/healthCheck.ts",
-        "list-subgraph-ids": "ts-node ./scripts/listSubgraphIds.ts"
+        "list-subgraph-ids": "ts-node ./scripts/listSubgraphIds.ts",
+        "prepare:sepolia": "npm run update-configs && npm run clean",
+        "generate-manifest:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
+        "generate-constants:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json src/constants/index.ts.template > src/constants/index.ts",
+        "codegen:sepolia": "npm run generate-manifest:sepolia && npm run generate-constants:sepolia && graph codegen",
+        "generate-manifest-satsuma:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
+        "codegen-satsuma:sepolia": "npm run generate-manifest-satsuma:sepolia && npm run generate-constants:sepolia && graph codegen",
+        "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key 6vVxe0hHhfjXl perp-v2-sepolia"
     },
     "author": "",
     "license": "BSD 3-Clause License",
