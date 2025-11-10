@@ -1,0 +1,241 @@
+specVersion: 0.0.4
+description: Perpetual Protocol Curie (V2) Subgraph
+repository: https://github.com/perpetual-protocol/perp-curie-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MarketRegistry
+    network: {{ network }}
+    source:
+      abi: MarketRegistry
+      address: "{{ core.contracts.MarketRegistry.address }}"
+      startBlock: {{ core.contracts.MarketRegistry.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/marketRegistry.ts
+      entities:
+        - Protocol
+        - ProtocolEventInfo
+        - Market
+      abis:
+        - name: MarketRegistry
+          file: ./abis/MarketRegistry.json
+      eventHandlers:
+        - event: PoolAdded(indexed address,indexed uint24,indexed address)
+          handler: handlePoolAdded
+        - event: FeeRatioChanged(address,uint24)
+          handler: handleFeeRatioChanged
+
+  - kind: ethereum/contract
+    name: Vault
+    network: {{ network }}
+    source:
+      abi: Vault
+      address: "{{ core.contracts.Vault.address }}"
+      startBlock: {{ core.contracts.Vault.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vault.ts
+      entities:
+        - Deposited
+        - Withdrawn
+        - CollateralLiquidated
+        - BadDebtSettled
+        - Protocol
+        - ProtocolEventInfo
+        - ProtocolTokenBalance
+        - Trader
+        - TraderTokenBalance
+        - Token
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Deposited(indexed address,indexed address,uint256)
+          handler: handleDeposited
+        - event: Withdrawn(indexed address,indexed address,uint256)
+          handler: handleWithdrawn
+        - event: CollateralLiquidated(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint24)
+          handler: handleCollateralLiquidated
+        - event: BadDebtSettled(indexed address,uint256)
+          handler: handleBadDebtSettled
+
+  - kind: ethereum/contract
+    name: Exchange
+    network: {{ network }}
+    source:
+      abi: Exchange
+      address: "{{ core.contracts.Exchange.address }}"
+      startBlock: {{ core.contracts.Exchange.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/exchange.ts
+      entities:
+        - FundingUpdated
+        - ProtocolEventInfo
+      abis:
+        - name: Exchange
+          file: ./abis/Exchange.json
+      eventHandlers:
+        - event: FundingUpdated(indexed address,uint256,uint256)
+          handler: handleFundingUpdated
+
+  - kind: ethereum/contract
+    name: ClearingHouse
+    network: {{ network }}
+    source:
+      abi: ClearingHouse
+      address: "{{ core.contracts.ClearingHouse.address }}"
+      startBlock: {{ core.contracts.ClearingHouse.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/clearingHouse.ts
+      entities:
+        - PositionChanged
+        - PositionClosed
+        - PositionLiquidated
+        - LiquidityChanged
+        - FundingPaymentSettled
+        - Protocol
+        - ProtocolEventInfo
+        - Market
+        - Trader
+        - TraderMarket
+        - Maker
+        - OpenOrder
+        - TraderDayData
+        - ReferralCodeDayData
+        - ReferralCode
+      abis:
+        - name: ClearingHouse
+          file: ./abis/ClearingHouse.json
+      eventHandlers:
+        - event: PositionChanged(indexed address,indexed address,int256,int256,uint256,int256,int256,uint256)
+          handler: handlePositionChanged
+        - event: PositionClosed(indexed address,indexed address,int256,int256,int256,int256,uint256)
+          handler: handlePositionClosed
+        - event: PositionLiquidated(indexed address,indexed address,uint256,uint256,uint256,address)
+          handler: handlePositionLiquidated
+        - event: LiquidityChanged(indexed address,indexed address,indexed address,int24,int24,int256,int256,int128,uint256)
+          handler: handleLiquidityChanged
+        - event: FundingPaymentSettled(indexed address,indexed address,int256)
+          handler: handleFundingPaymentSettled
+        - event: ReferredPositionChanged(indexed bytes32)
+          handler: handleReferralPositionChanged
+
+  - kind: ethereum/contract
+    name: AccountBalance
+    network: {{ network }}
+    source:
+      abi: AccountBalance
+      address: "{{ core.contracts.AccountBalance.address }}"
+      startBlock: {{ core.contracts.AccountBalance.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/accountBalance.ts
+      entities:
+        - PnlRealized
+        - Trader
+        - ProtocolEventInfo
+      abis:
+        - name: AccountBalance
+          file: ./abis/AccountBalance.json
+      eventHandlers:
+        - event: PnlRealized(indexed address,int256)
+          handler: handlePnlRealized
+
+  - kind: ethereum/contract
+    name: InsuranceFund
+    network: {{ network }}
+    source:
+      abi: InsuranceFund
+      address: "{{ core.contracts.InsuranceFund.address }}"
+      startBlock: {{ core.contracts.InsuranceFund.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/insuranceFund.ts
+      entities:
+        - Repaid
+        - FeeDistributed
+        - DistributionThresholdChanged
+        - Protocol
+        - ProtocolEventInfo
+      abis:
+        - name: InsuranceFund
+          file: ./abis/InsuranceFund.json
+      eventHandlers:
+        - event: Repaid(uint256,uint256)
+          handler: handleRepaid
+        - event: FeeDistributed(uint256,uint256,uint256,uint256)
+          handler: handleFeeDistributed
+        - event: DistributionThresholdChanged(uint256)
+          handler: handleDistributionThresholdChanged
+
+  - kind: ethereum/contract
+    name: CollateralManager
+    network: {{ network }}
+    source:
+      abi: CollateralManager
+      address: "{{ core.contracts.CollateralManager.address }}"
+      startBlock: {{ core.contracts.CollateralManager.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/collateralManager.ts
+      entities:
+        - CollateralAdded
+        - Token
+        - ProtocolEventInfo
+      abis:
+        - name: CollateralManager
+          file: ./abis/CollateralManager.json
+      eventHandlers:
+        - event: CollateralAdded(indexed address,address,uint24,uint24,uint256)
+          handler: handleCollateralAdded
+
+  - kind: ethereum/contract
+    name: DelegateApproval
+    network: {{ network }}
+    source:
+      abi: DelegateApproval
+      address: "{{ core.contracts.DelegateApproval.address }}"
+      startBlock: {{ core.contracts.DelegateApproval.createdBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/delegateApproval.ts
+      entities:
+        - DelegationApproved
+        - DelegationRevoked
+        - ProtocolEventInfo
+      abis:
+        - name: DelegateApproval
+          file: ./abis/DelegateApproval.json
+      eventHandlers:
+        - event: DelegationApproved(indexed address,address,uint8)
+          handler: handleDelegationApproved
+        - event: DelegationRevoked(indexed address,address,uint8)
+          handler: handleDelegationRevoked
+
+{{#graft}}
+features:
+  - grafting
+graft:
+  base: {{ graft.base }}
+  block: {{ graft.block }}
+{{/graft}}

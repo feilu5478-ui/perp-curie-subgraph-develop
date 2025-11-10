@@ -1,0 +1,41 @@
+name: Deploy Staging (Optimism Goerli)
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-the-graph:
+    runs-on: ubuntu-latest
+    environment: optimism-goerli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Install
+        run: npm ci
+
+      - name: Deploy to The Graph
+        run: |
+          npx graph auth --product hosted-service ${{ secrets.THE_GRAPH_ACCESS_TOKEN }}
+          npm run deploy-the-graph:optimism-goerli
+
+  notify:
+    needs: [deploy-the-graph]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_RELEASE_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: >-
+            **[staging]** Perp v2 Subgraph deployed (Optimism Goerli)
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
