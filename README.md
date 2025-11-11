@@ -65,7 +65,34 @@ Wait until all three subgraphs are synced, then click "Promote to Live" button o
 ---
 
 > If any features/functionalities described in the Perpetual Protocol documentation, code comments, marketing, community discussion or announcements, pre-production or testing code, or other non-production-code sources, vary or differ from the code used in production, in case of any dispute, the code used in production shall prevail.
-
+## 部署到sepolia网络流程
+1、在configs文件夹下添加sepolia.json文件，内容参考optimism.json
+2、在scripts文件夹中修改updateConfigs.ts文件，添加sepolia支持
+3、在hard-fixed-data文件夹中添加sepolia.ts文件
+4、修改package.json配置文件，在scripts中添加sepolia相关命令：
+    "prepare:sepolia": "npm run update-configs && npm run clean",
+    "generate-manifest:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "generate-constants:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json src/constants/index.ts.template > src/constants/index.ts",
+    "codegen:sepolia": "npm run generate-manifest:sepolia && npm run generate-constants:sepolia && graph codegen",
+    "generate-manifest-satsuma:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "codegen-satsuma:sepolia": "npm run generate-manifest-satsuma:sepolia && npm run generate-constants:sepolia && graph codegen",
+    "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key        6vVxe0hHhfjXl perp-v2-sepolia"
+5、输入命令：
+    npm run codegen-satsuma:sepolia
+    npm run deploy-satsuma:sepolia
+  或者手动执行步骤：
+    1. 更新配置（跳过 ABI）
+      npx ts-node scripts/updateConfigs.ts
+    2. 清理生成的文件
+      npx rimraf generated
+    3. 生成 manifest
+      npx mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml
+    4. 生成 constants
+      npx mustache configs/sepolia.json src/constants/index.ts.template > src/constants/index.ts
+    5. 生成代码
+      npx graph codegen
+    6. 部署到 Satsuma
+      npx graph deploy --version-label v1 --node https://app.satsuma.xyz/api/subgraphs/deploy --ipfs https://api.thegraph.com/ipfs/ --deploy-key $SATSUMA_DEPLOY_KEY perp-v2-sepolia
 ## 部署到Satsuma结果：
 ```
 npm run deploy-satsuma:sepolia
