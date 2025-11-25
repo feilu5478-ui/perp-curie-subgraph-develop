@@ -39,7 +39,7 @@
         "codegen:sepolia": "npm run generate-manifest:sepolia && npm run generate-constants:sepolia && graph codegen",
         "generate-manifest-satsuma:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
         "codegen-satsuma:sepolia": "npm run generate-manifest-satsuma:sepolia && npm run generate-constants:sepolia && graph codegen",
-        "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key 6vVxe0hHhfjXl perp-v2-sepolia"
+        "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key 6vVxe0hHhfjXl perp-new-sepolia"
     },
     "author": "",
     "license": "BSD 3-Clause License",
