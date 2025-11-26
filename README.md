@@ -76,7 +76,7 @@ Wait until all three subgraphs are synced, then click "Promote to Live" button o
     "codegen:sepolia": "npm run generate-manifest:sepolia && npm run generate-constants:sepolia && graph codegen",
     "generate-manifest-satsuma:sepolia": "npm run prepare:sepolia && mustache configs/sepolia.json subgraph.template.yaml > subgraph.yaml",
     "codegen-satsuma:sepolia": "npm run generate-manifest-satsuma:sepolia && npm run generate-constants:sepolia && graph codegen",
-    "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key        6vVxe0hHhfjXl perp-v2-sepolia"
+    "deploy-satsuma:sepolia": "npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key <部署密钥> perp-v2-sepolia"
 5、输入命令：
     npm run codegen-satsuma:sepolia
     npm run deploy-satsuma:sepolia
@@ -98,7 +98,7 @@ Wait until all three subgraphs are synced, then click "Promote to Live" button o
 npm run deploy-satsuma:sepolia
 
 > perp-curie-subgraph@2.0.0 deploy-satsuma:sepolia
-> npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key 6vVxe0hHhfjXl perp-v2-sepolia
+> npm run codegen-satsuma:sepolia && graph deploy --version-label v1 --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --deploy-key <部署密钥> perp-v2-sepolia
 
 
 > perp-curie-subgraph@2.0.0 codegen-satsuma:sepolia
